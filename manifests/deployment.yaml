@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hoptool-invoiceme-be
+  name: hoptool-invoiceme-be
+  namespace: dev
+spec:
+  replicas: 1
+  minReadySeconds: 45
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: hoptool-invoiceme-be
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: hoptool-invoiceme-be
+    spec:
+      containers:
+      - image: <IMAGE>
+        imagePullPolicy: Always
+        name: hoptool-invoiceme-be
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
