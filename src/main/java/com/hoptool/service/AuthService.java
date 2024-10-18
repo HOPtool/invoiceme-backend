@@ -7,9 +7,14 @@ package com.hoptool.service;
 
 import com.hoptool.exceptions.InvalidRequestException;
 import com.hoptool.exceptions.ProcessingException;
+import com.hoptool.invoiceme.auth.dto.FIRSMBSLogin;
+import com.hoptool.invoiceme.auth.dto.FIRSMBSLoginObj;
+import com.hoptool.invoiceme.auth.dto.FirsLoginResponse;
 import com.hoptool.invoiceme.auth.dto.ForceSyncProfilePasswordRequest;
 import com.hoptool.invoiceme.auth.dto.ForceSyncProfilePasswordRequestObj;
 import com.hoptool.invoiceme.auth.dto.ForceSyncResponse;
+import com.hoptool.invoiceme.auth.dto.ProfileSyncRequest;
+import com.hoptool.invoiceme.auth.dto.ProfileSyncRequestObj;
 import com.hoptool.invoiceme.auth.dto.ProfileSyncResponse;
 import com.hoptool.invoiceme.auth.dto.ResetKeysRequest;
 import com.hoptool.invoiceme.auth.dto.ResetRequest;
@@ -50,8 +55,8 @@ public class AuthService {
     @ConfigProperty(name = "auth.service.base.url")
     String authServiceBaseUrl;
     
-//    @ConfigProperty(name = "firs.eivc.api.key")
-//    String firstEIVCAPIKey;
+    @ConfigProperty(name = "firs.mbs.login.url")
+    String firsMBSLoginUrl;
 //    
 //    @ConfigProperty(name = "firs.eivc.api.secret")
 //    String firstEIVCAPISecret;
@@ -185,6 +190,8 @@ public class AuthService {
     }
     
     
+    //ProfileSyncRequest
+    
     
     public @NotNull ForceSyncResponse doCompleteForcePasswordChange(ForceSyncProfilePasswordRequest request) {
         log.info("-- doCompleteForcePasswordChange --"+request);
@@ -217,6 +224,79 @@ public class AuthService {
             }
 
             requestResponse = httpResponse.readEntity(ForceSyncResponse.class);
+        }
+
+        return  requestResponse;//new ProfileSyncResponse(requestResponse.code(), requestResponse.data(), (requestResponse.code() !=null && requestResponse.code().equals("200")|| requestResponse.equals("202")?"Successful":"Error"));
+    }
+    
+    public @NotNull ProfileSyncResponse doChangePassword(ProfileSyncRequest request) {
+        log.info("-- doChangePassword --"+request);
+        ProfileSyncResponse requestResponse;
+          
+        try (var client = ClientBuilder.newClient()) {
+           
+            ProfileSyncRequestObj irnDTO = new ProfileSyncRequestObj(request);
+            log.info("@@ doChangePassword--irnDTO-- "+irnDTO);
+            var target = client.target(String.format("%s/sync-profile",authServiceBaseUrl));
+            var requestBuilder = target.request();
+            
+            var httpResponse = requestBuilder.post(jakarta.ws.rs.client.Entity.json(new ProfileSyncRequestObj(request)));
+            
+            switch (httpResponse.getStatus()) {
+                case 200 -> {
+                }
+                case 400, 401, 403,404,405,500,504 -> {
+                    var body = httpResponse.readEntity(String.class);
+                    log.warn("Invalid   password change response {} {}", httpResponse.getStatus(), body);
+                    throw new InvalidRequestException(String.format("Invalid  password change {%s} : {%s}",
+                            httpResponse.getStatus(), body));
+                }
+                default -> {
+                    var body = httpResponse.readEntity(String.class);
+                    log.warn("Invalid  password change exception {} {}", httpResponse.getStatus(), body);
+                    throw new ProcessingException(String.format("Error occurred while   password change {%s}  {%s} : {%s}",
+                            request.code(),httpResponse.getStatus(), body));
+                }
+            }
+
+            requestResponse = httpResponse.readEntity(ProfileSyncResponse.class);
+        }
+
+        return  requestResponse;//new ProfileSyncResponse(requestResponse.code(), requestResponse.data(), (requestResponse.code() !=null && requestResponse.code().equals("200")|| requestResponse.equals("202")?"Successful":"Error"));
+    }
+    
+    
+    public @NotNull FirsLoginResponse doFirsMBSLogin(FIRSMBSLogin request) {
+        log.info("-- doFirsMBSLogin --"+request);
+        FirsLoginResponse requestResponse;
+        
+        try (var client = ClientBuilder.newClient()) {
+           
+            FIRSMBSLoginObj irnDTO = new FIRSMBSLoginObj(request);
+            log.info("@@ doChangePassword--irnDTO-- "+irnDTO);
+            var target = client.target(String.format("%s/taxpayer-login",firsMBSLoginUrl));
+            var requestBuilder = target.request();
+            
+            var httpResponse = requestBuilder.post(jakarta.ws.rs.client.Entity.json(new FIRSMBSLoginObj(request)));
+            
+            switch (httpResponse.getStatus()) {
+                case 200 -> {
+                }
+                case 400, 401, 403,404,405,500,504 -> {
+                    var body = httpResponse.readEntity(String.class);
+                    log.warn("Invalid firs mbs login response {} {}", httpResponse.getStatus(), body);
+                    throw new InvalidRequestException(String.format("Invalid firs mbs login {%s} : {%s}",
+                            httpResponse.getStatus(), body));
+                }
+                default -> {
+                    var body = httpResponse.readEntity(String.class);
+                    log.warn("Invalid  firs mbs login exception {} {}", httpResponse.getStatus(), body);
+                    throw new ProcessingException(String.format("Error occurred while  calling firs mbs login {%s}  {%s} : {%s}",
+                            request.email(),httpResponse.getStatus(), body));
+                }
+            }
+
+            requestResponse = httpResponse.readEntity(FirsLoginResponse.class);
         }
 
         return  requestResponse;//new ProfileSyncResponse(requestResponse.code(), requestResponse.data(), (requestResponse.code() !=null && requestResponse.code().equals("200")|| requestResponse.equals("202")?"Successful":"Error"));

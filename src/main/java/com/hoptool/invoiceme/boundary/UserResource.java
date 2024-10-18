@@ -1,7 +1,10 @@
 package com.hoptool.invoiceme.boundary;
 
+import com.hoptool.invoiceme.auth.dto.FIRSMBSLogin;
+import com.hoptool.invoiceme.auth.dto.FirsLoginResponse;
 import com.hoptool.invoiceme.dto.ChangeProfilePasswordRequest;
 import com.hoptool.invoiceme.auth.dto.ForceSyncResponse;
+import com.hoptool.invoiceme.auth.dto.ProfileSyncResponse;
 import com.hoptool.invoiceme.controllers.CryptoHelper;
 import com.hoptool.invoiceme.controllers.InvoiceMeRequestController;
 import com.hoptool.invoiceme.controllers.UserController;
@@ -123,59 +126,20 @@ public class UserResource {
       return userController.doCompleteOnboarding(request);
     }
     
-     @POST
+    @POST
     @Path("change-password")
-    public ForceSyncResponse doChangePassword(@Valid final ChangeProfilePasswordRequest request) {
+    public ProfileSyncResponse doChangePassword(@Valid final ChangeProfilePasswordRequest request) {
         
       return userController.doChangePassword(request);
     }
     
     
-    
-    /*
-    
     @POST
-    @Path("search-invoice")
-    public InvoiceValidationResponse doSearchInvoice(@Valid final ValidateIRNRequest request) {
+    @Path("firs-mbs-login")
+    public FirsLoginResponse doChangePassword(@Valid final FIRSMBSLogin request) {
         
-      return invoiceService.doSearchInvoice(request);
+      return userController.doFIRSMBSLogin(request);
     }
-   
-    
-    @POST
-    @Path("validate-invoice")
-    //@Metered(name = "reset_metered")
-    public InvoiceValidationResponse doValidateInvoiceRequest(@Valid final SignInvoiceValidation request) {
-        
-        return invoiceController.doProcessInvoiceValidationRequest(request);// invoiceService.doValidateInvoice(request);
-    }
-    
-    
-    @POST
-    @Path("generate-irn")
-    public IRNGenerationResponse doGenerateIRN(@Valid final EntityRequest request) {
-        
-        return invoiceController.doGenerateIRN(request);
-    }
- 
-    
-    @POST
-    @Path("sign-invoice")
-    public SignInvoiceResponse doSignInvoice(@Valid final SignInvoice request) {
-        
-        return invoiceController.doSignInvoice(request);
-    }
-    
-    
-    @POST
-    @Path("update-invoice")
-    public UpdatedInvoiceResponse doUpdateInvoice(@Valid final UpdateInvoice request) {
-        
-        return invoiceController.doUpdateInvoice(request);
-    }
-   
-   */
-    
     
 
 }

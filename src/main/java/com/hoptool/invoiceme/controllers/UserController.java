@@ -5,10 +5,13 @@
 package com.hoptool.invoiceme.controllers;
 
 import com.hoptool.exceptions.InvalidRequestException;
+import com.hoptool.invoiceme.auth.dto.FIRSMBSLogin;
+import com.hoptool.invoiceme.auth.dto.FirsLoginResponse;
 import com.hoptool.invoiceme.dto.ChangeProfilePasswordRequest;
 import com.hoptool.invoiceme.dto.ChangeProfilePasswordRequestObj;
 import com.hoptool.invoiceme.auth.dto.ForceSyncProfilePasswordRequest;
 import com.hoptool.invoiceme.auth.dto.ForceSyncResponse;
+import com.hoptool.invoiceme.auth.dto.ProfileSyncRequest;
 import com.hoptool.invoiceme.auth.dto.ProfileSyncResponse;
 import com.hoptool.invoiceme.auth.dto.SyncProfile;
 import com.hoptool.invoiceme.auth.dto.UserLoginRequest;
@@ -200,10 +203,10 @@ public class UserController {
       return null;  
     }
     
-     public ForceSyncResponse doChangePassword(@Valid ChangeProfilePasswordRequest request) {
+     public ProfileSyncResponse doChangePassword(@Valid ChangeProfilePasswordRequest request) {
         
         UserLogResponse response = null;
-        ForceSyncResponse doUserLogin = null;
+        ProfileSyncResponse doChangePassword = null;
         try 
         {
             ChangeProfilePasswordRequestObj userLoginObj = new ChangeProfilePasswordRequestObj(request);
@@ -213,33 +216,22 @@ public class UserController {
 
                     UserLog doLookUp = userLogRepo.doLookUp(userLoginObj.email, userLoginObj.corporateId);
                     log.info("--- doLookUp -- "+doLookUp);
-                    if(doLookUp != null && "YES".equals(doLookUp.initResetPassword))
+                    if(doLookUp != null )
                     {
                         
-                        ForceSyncProfilePasswordRequest forceSyncProfilePasswordRequest = null;// new ForceSyncProfilePasswordRequest(userLoginObj.password, doLookUp.businessMobileNo,doLookUp.userEmail, userLoginObj.verifyPassword, doLookUp.tid, doLookUp.controlCode, doLookUp.businessMobileNo, doLookUp.clientId, doLookUp.channel, userLoginObj.otp);
-       
-                        System.out.println("--> forceSyncProfilePasswordRequest = " +forceSyncProfilePasswordRequest);
+                        ProfileSyncRequest profileSyncRequest = new ProfileSyncRequest (doLookUp.businessMobileNo, doLookUp.userEmail, userLoginObj.password, userLoginObj.verifyPassword, doLookUp.businessMobileNo, doLookUp.channel, doLookUp.tid, doLookUp.controlCode, doLookUp.clientId);
+   
+                        System.out.println("--> profileSyncRequest = " +profileSyncRequest);
                         
                         
-                        doUserLogin = authService.doCompleteForcePasswordChange(forceSyncProfilePasswordRequest);
+                        doChangePassword = authService.doChangePassword(profileSyncRequest);
  
-                        if(doUserLogin !=null && doUserLogin.statusHeaders() !=null && doUserLogin.statusHeaders().statusCode == ErrorCodes.SUCCESSFUL)
+                        if(doChangePassword !=null && doChangePassword.statusHeaders() !=null && doChangePassword.statusHeaders().statusCode == ErrorCodes.SUCCESSFUL)
                         {
-                            
-                             doLookUp.initResetPassword = "NO";
-                             doLookUp.initResetPasswordDate = LocalDateTime.now();
-                        
-                             UserLog doSyncUser = userLogRepo.doSyncUser(doLookUp);
                            
-                             System.out.println("doUserLogin = " + doUserLogin);
-              
-                        
-                        
+                            return doChangePassword;
                         }
                      
-                        //ResponseStatusHeaders
-                        
-                        return new ForceSyncResponse( doUserLogin.statusHeaders());
                  
 
 
@@ -249,8 +241,8 @@ public class UserController {
             else
             {
                 
-               return new ForceSyncResponse( new com.hoptool.invoiceme.auth.dto.ResponseStatusHeaders(ErrorCodes.FORMAT_ERROR, ErrorCodes.doErroDesc(ErrorCodes.FORMAT_ERROR)));
-                         
+               return  new ProfileSyncResponse(new com.hoptool.invoiceme.auth.dto.ResponseStatusHeaders(ErrorCodes.FORMAT_ERROR,ErrorCodes.doErroDesc(ErrorCodes.FORMAT_ERROR)), 0, "", "", "", 0, "","", "","","","",null,null,null,null,"");
+                   
             }
            
             
@@ -259,9 +251,11 @@ public class UserController {
             
              log.info("Exception @ doInitForcePasswordReset ",e);
             
-             return new ForceSyncResponse( new com.hoptool.invoiceme.auth.dto.ResponseStatusHeaders(ErrorCodes.SYSTEM_ERROR, ErrorCodes.doErroDesc(ErrorCodes.SYSTEM_ERROR)));
+             //return new ForceSyncResponse( new com.hoptool.invoiceme.auth.dto.ResponseStatusHeaders(ErrorCodes.SYSTEM_ERROR, ErrorCodes.doErroDesc(ErrorCodes.SYSTEM_ERROR)));
                
          
+              return  new ProfileSyncResponse(new com.hoptool.invoiceme.auth.dto.ResponseStatusHeaders(ErrorCodes.SYSTEM_ERROR,ErrorCodes.doErroDesc(ErrorCodes.SYSTEM_ERROR)), 0, "", "", "", 0, "","", "","","","",null,null,null,null,"");
+              
         }
     
       return null;  
@@ -330,6 +324,40 @@ public class UserController {
         }
     
       return null;  
+    }
+    
+    
+    public FirsLoginResponse doFIRSMBSLogin(@Valid FIRSMBSLogin request) {
+        
+        FirsLoginResponse doFirsMBSLogin = null;
+        try 
+        {
+           
+            if(request !=null)
+            {
+
+                   
+                 return  authService.doFirsMBSLogin(request);
+
+            }
+            else
+            {
+                        
+              return new FirsLoginResponse(ErrorCodes.FORMAT_ERROR, null);
+                 
+            }
+           
+           
+            
+        } catch (Exception e) {
+            
+            
+             log.info("Exception @ doFIRSMBSLogin ",e);
+            
+             return new FirsLoginResponse(ErrorCodes.SYSTEM_ERROR, null);
+         
+        }
+    
     }
     
     public UserLogResponse doForcePasswordReset(@Valid UserLogin request) {
