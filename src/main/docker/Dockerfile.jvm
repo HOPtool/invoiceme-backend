@@ -88,6 +88,9 @@ ENV LANGUAGE='en_US:en'
 #COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
 COPY --chown=185 target/*.jar /app
 
+RUN mkdir -p /opt/hoptool/logs && touch /opt/hoptool/logs/invoiceme.log
+RUN chmod -R 777 /opt/hoptool/logs/invoiceme.log
+
 USER 185
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 #ENV JAVA_APP_JAR="/app/quarkus-run.jar"
