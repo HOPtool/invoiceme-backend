@@ -9,7 +9,7 @@ spec:
   tls:
    - hosts:
      - dev.invoiceme.hoptool.co
-     secretName: letsencrypt-hoptool-invoiceme-be
+     secretName: letsencrypt-hoptool-invoiceme-be-new
   rules:
     - host: dev.invoiceme.hoptool.co
       http:
