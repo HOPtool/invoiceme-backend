@@ -5,6 +5,8 @@
 package com.hoptool.invoiceme.controllers;
 
 import com.hoptool.exceptions.InvalidRequestException;
+import com.hoptool.invoiceme.dto.ChangeProfilePasswordRequest;
+import com.hoptool.invoiceme.dto.ChangeProfilePasswordRequestObj;
 import com.hoptool.invoiceme.auth.dto.ForceSyncProfilePasswordRequest;
 import com.hoptool.invoiceme.auth.dto.ForceSyncResponse;
 import com.hoptool.invoiceme.auth.dto.ProfileSyncResponse;
@@ -151,6 +153,73 @@ public class UserController {
                         ForceSyncProfilePasswordRequest forceSyncProfilePasswordRequest = new ForceSyncProfilePasswordRequest(userLoginObj.password, doLookUp.businessMobileNo,doLookUp.userEmail, userLoginObj.verifyPassword, doLookUp.tid, doLookUp.controlCode, doLookUp.businessMobileNo, doLookUp.clientId, doLookUp.channel, userLoginObj.otp);
        
                         System.out.println("--> forceSyncProfilePasswordRequest = " +forceSyncProfilePasswordRequest);
+                        
+                        doUserLogin = authService.doCompleteForcePasswordChange(forceSyncProfilePasswordRequest);
+ 
+                        if(doUserLogin !=null && doUserLogin.statusHeaders() !=null && doUserLogin.statusHeaders().statusCode == ErrorCodes.SUCCESSFUL)
+                        {
+                            
+                             doLookUp.initResetPassword = "NO";
+                             doLookUp.initResetPasswordDate = LocalDateTime.now();
+                        
+                             UserLog doSyncUser = userLogRepo.doSyncUser(doLookUp);
+                           
+                             System.out.println("doUserLogin = " + doUserLogin);
+              
+                        
+                        
+                        }
+                     
+                        //ResponseStatusHeaders
+                        
+                        return new ForceSyncResponse( doUserLogin.statusHeaders());
+                 
+
+
+                    }
+                    
+            }
+            else
+            {
+                
+               return new ForceSyncResponse( new com.hoptool.invoiceme.auth.dto.ResponseStatusHeaders(ErrorCodes.FORMAT_ERROR, ErrorCodes.doErroDesc(ErrorCodes.FORMAT_ERROR)));
+                         
+            }
+           
+            
+        } catch (Exception e) {
+            
+            
+             log.info("Exception @ doInitForcePasswordReset ",e);
+            
+             return new ForceSyncResponse( new com.hoptool.invoiceme.auth.dto.ResponseStatusHeaders(ErrorCodes.SYSTEM_ERROR, ErrorCodes.doErroDesc(ErrorCodes.SYSTEM_ERROR)));
+               
+         
+        }
+    
+      return null;  
+    }
+    
+     public ForceSyncResponse doChangePassword(@Valid ChangeProfilePasswordRequest request) {
+        
+        UserLogResponse response = null;
+        ForceSyncResponse doUserLogin = null;
+        try 
+        {
+            ChangeProfilePasswordRequestObj userLoginObj = new ChangeProfilePasswordRequestObj(request);
+            
+            if(userLoginObj !=null)
+            {
+
+                    UserLog doLookUp = userLogRepo.doLookUp(userLoginObj.email, userLoginObj.corporateId);
+                    log.info("--- doLookUp -- "+doLookUp);
+                    if(doLookUp != null && "YES".equals(doLookUp.initResetPassword))
+                    {
+                        
+                        ForceSyncProfilePasswordRequest forceSyncProfilePasswordRequest = null;// new ForceSyncProfilePasswordRequest(userLoginObj.password, doLookUp.businessMobileNo,doLookUp.userEmail, userLoginObj.verifyPassword, doLookUp.tid, doLookUp.controlCode, doLookUp.businessMobileNo, doLookUp.clientId, doLookUp.channel, userLoginObj.otp);
+       
+                        System.out.println("--> forceSyncProfilePasswordRequest = " +forceSyncProfilePasswordRequest);
+                        
                         
                         doUserLogin = authService.doCompleteForcePasswordChange(forceSyncProfilePasswordRequest);
  
@@ -552,6 +621,8 @@ public class UserController {
         }
         
     }
+    
+    
     
 
 

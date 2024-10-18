@@ -1,5 +1,6 @@
 package com.hoptool.invoiceme.boundary;
 
+import com.hoptool.invoiceme.dto.ChangeProfilePasswordRequest;
 import com.hoptool.invoiceme.auth.dto.ForceSyncResponse;
 import com.hoptool.invoiceme.controllers.CryptoHelper;
 import com.hoptool.invoiceme.controllers.InvoiceMeRequestController;
@@ -120,6 +121,13 @@ public class UserResource {
     public OnboardingCompletionResponse doCompleteOnBoarding(@Valid final CompleteBusinessOnboarding request) {
         
       return userController.doCompleteOnboarding(request);
+    }
+    
+     @POST
+    @Path("change-password")
+    public ForceSyncResponse doChangePassword(@Valid final ChangeProfilePasswordRequest request) {
+        
+      return userController.doChangePassword(request);
     }
     
     
