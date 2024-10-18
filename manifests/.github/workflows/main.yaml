@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: hoptool-dashboard
+name: hoptool-invoiceme-be
 
 # Controls when the workflow will run
 on:
@@ -13,12 +13,12 @@ on:
 
 env:
   IMAGE_TAG: $(echo $GITHUB_SHA | head -c7)
-  DOCR_ENDPOINT: "registry.digitalocean.com/hoptool/hoptool-dashboard"
+  DOCR_ENDPOINT: "registry.digitalocean.com/hoptool/hoptool-invoiceme-be"
   DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-  PROJECT_NAME: "hoptool-dashboard"
+  PROJECT_NAME: "hoptool-invoiceme-be"
   CLUSTER_NAME: "hoptool-cluster"
   REGION: "FRA1"
-  REPO_NAME: hoptool-dashboard
+  REPO_NAME: hoptool-invoiceme-be
   
 jobs:
   # This workflow contains a single job called "build"
@@ -45,7 +45,7 @@ jobs:
         run: docker push $DOCR_ENDPOINT:$(echo $GITHUB_SHA | head -c7)
         
       - name: Update deployment file
-        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/hoptool/hoptool-dashboard:'${TAG}'|' $GITHUB_WORKSPACE/manifests/deployment.yaml
+        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/hoptool/hoptool-invoiceme-be:'${TAG}'|' $GITHUB_WORKSPACE/manifests/deployment.yaml
         
       - name: Save DigitalOcean kubeconfig with short-lived credentials
         run: doctl kubernetes cluster kubeconfig save --expiry-seconds 600 $CLUSTER_NAME
