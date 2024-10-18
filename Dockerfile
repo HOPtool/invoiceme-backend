@@ -6,6 +6,7 @@ WORKDIR /workspace
 
 # Copy the Maven project files
 COPY . ./
+RUN ls -a
 
 # Package the application, skipping tests for faster build
 RUN mvn clean package -DskipTests
