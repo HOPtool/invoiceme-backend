@@ -77,21 +77,35 @@
 ###
 FROM registry.access.redhat.com/ubi8/openjdk-17:1.14
 
-ENV LANGUAGE='en_US:en'
+# Switch to the root user to install Java 21
+USER root
 
+# Install Java 21
+RUN yum install -y java-21-openjdk-devel
+
+# Set the default Java version to Java 21
+RUN alternatives --set java /usr/lib/jvm/java-21-openjdk/bin/java
+
+# Verify installation
+RUN java -version
+
+# Set the working directory
+WORKDIR /app
+
+COPY . ./
+ENV LANGUAGE='en_US:en'
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
 #COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
 #COPY --chown=185 target/quarkus-app/*.jar /deployments/
 #COPY --chown=185 target/quarkus-app/app/ /deployments/app/
 #COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
-COPY --chown=185 target/*.jar /deployments/
+COPY --chown=185 target/*.jar /app
 
-EXPOSE 8080
 USER 185
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
-#ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
-ENV JAVA_APP_JAR="/deployments/hoptool-invoiceme-1.0.0-SNAPSHOT-runner.jar"
+#ENV JAVA_APP_JAR="/app/quarkus-run.jar"
+ENV JAVA_APP_JAR="/app/hoptool-invoiceme-1.0.0-SNAPSHOT-runner.jar"
 
 EXPOSE 8877
 
