@@ -5,8 +5,7 @@ FROM maven:3.8.3-openjdk-17 AS build
 WORKDIR /workspace
 
 # Copy the Maven project files
-COPY pom.xml ./
-COPY src ./src
+COPY . ./
 
 # Package the application, skipping tests for faster build
 RUN mvn clean package -DskipTests
