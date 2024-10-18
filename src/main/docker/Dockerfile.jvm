@@ -77,7 +77,7 @@
 ###
 #FROM registry.access.redhat.com/ubi8/openjdk-17:1.14
 FROM openjdk:21-jdk
-
+WORKDIR /app
 COPY . ./
 ENV LANGUAGE='en_US:en'
 
