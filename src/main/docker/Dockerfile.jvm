@@ -96,5 +96,5 @@ ENV JAVA_APP_JAR="/app/hoptool-invoiceme-1.0.0-SNAPSHOT-runner.jar"
 EXPOSE 8877
 
 # Command to run the application
-CMD ["java", "-jar", "/deployments/hoptool-invoiceme-1.0.0-SNAPSHOT-runner.jar"]
+CMD ["java", "-jar", "/app/hoptool-invoiceme-1.0.0-SNAPSHOT-runner.jar"]
 
