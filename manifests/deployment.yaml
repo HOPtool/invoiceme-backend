@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  labels:
-    app: hoptool-invoiceme-be
   name: hoptool-invoiceme-be
   namespace: dev
+  labels:
+    app: hoptool-invoiceme-be
 spec:
   replicas: 1
   minReadySeconds: 45
@@ -13,18 +13,23 @@ spec:
     matchLabels:
       app: hoptool-invoiceme-be
   strategy:
+    type: RollingUpdate
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-    type: RollingUpdate
   template:
     metadata:
       labels:
         app: hoptool-invoiceme-be
     spec:
       containers:
-      - image: <IMAGE>
+      - name: hoptool-invoiceme-be
+        image: <IMAGE>
         imagePullPolicy: Always
-        name: hoptool-invoiceme-be
+        ports:
+        - containerPort: 8877
+        env:
+        - name: TZ
+          value: "Africa/Lagos"
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
