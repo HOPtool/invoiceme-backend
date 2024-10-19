@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-hoptool-invoiceme-be
+  namespace: dev
+  annotations:
+   cert-manager.io/issuer: letsencrypt-nginx
+spec:
+  tls:
+   - hosts:
+     - dev.invoiceme.hoptool.co
+     secretName: letsencrypt-hoptool-invoiceme-be-new
+  rules:
+    - host: dev.invoiceme.hoptool.co
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hoptool-invoiceme-be
+                port:
+                  number: 443
+  ingressClassName: nginx
