@@ -4,9 +4,6 @@
  */
 package com.hoptool.invoiceme.dto;
 
-import com.hoptool.invoiceme.validators.HoptoolUserPassword;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.ToString;
 
 /**
@@ -22,6 +19,7 @@ public class ChangeProfilePasswordRequestObj {
         
       this.email = rx.email();
       this.password = rx.password();
+      this.newPassword = rx.newPassword();
       this.verifyPassword = rx.verifyPassword();
       this.corporateId = rx.corporateId();
     
@@ -29,6 +27,7 @@ public class ChangeProfilePasswordRequestObj {
     
      public String email;
      public String password;
+     public String newPassword;
      public String verifyPassword;
      public String corporateId;
     

@@ -122,7 +122,7 @@ public class InvoicesMeResources {
                     {
                         businessName = enumName.split(lookUp.validationType()+"_")[1];
 
-                        business = new BusinessNameResponse(ErrorCodes.SUCCESSFUL, businessName);
+                        business = new BusinessNameResponse(ErrorCodes.SUCCESSFUL, businessName.replaceAll("_", " "));
                     }
 
                 }

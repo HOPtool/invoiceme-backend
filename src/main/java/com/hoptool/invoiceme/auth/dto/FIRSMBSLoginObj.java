@@ -4,10 +4,13 @@
  */
 package com.hoptool.invoiceme.auth.dto;
 
+import lombok.ToString;
+
 /**
  *
  * @author paycraftsystems-i
  */
+@ToString
 public class FIRSMBSLoginObj
 {
     public FIRSMBSLoginObj(FIRSMBSLogin rx) {

@@ -26,6 +26,9 @@ public record ChangeProfilePasswordRequest (
      String password,
      @NotBlank
      @HoptoolUserPassword
+     String newPassword,
+     @NotBlank
+     @HoptoolUserPassword
      String verifyPassword,
 
      @NotBlank

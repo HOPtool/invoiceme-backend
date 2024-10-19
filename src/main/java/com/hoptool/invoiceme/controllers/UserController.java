@@ -4,6 +4,7 @@
  */
 package com.hoptool.invoiceme.controllers;
 
+import com.google.gson.Gson;
 import com.hoptool.exceptions.InvalidRequestException;
 import com.hoptool.invoiceme.auth.dto.FIRSMBSLogin;
 import com.hoptool.invoiceme.auth.dto.FirsLoginResponse;
@@ -45,6 +46,7 @@ import com.hoptool.resources.AESCrypter;
 import com.hoptool.resources.ErrorCodes;
 import com.hoptool.resources.RandomCharacter;
 import com.hoptool.service.AuthService;
+import com.hoptool.service.InvoiceService;
 import io.quarkus.hibernate.orm.panache.Panache;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -75,6 +77,9 @@ public class UserController {
     
     @Inject
     AuthService authService;
+    
+    @Inject
+    InvoiceService invoiceService;
     
     
     public UserLogResponse doLogin(@Valid UserLogin request) {
@@ -218,13 +223,12 @@ public class UserController {
                     log.info("--- doLookUp -- "+doLookUp);
                     if(doLookUp != null )
                     {
-                        
-                        ProfileSyncRequest profileSyncRequest = new ProfileSyncRequest (doLookUp.businessMobileNo, doLookUp.userEmail, userLoginObj.password, userLoginObj.verifyPassword, doLookUp.businessMobileNo, doLookUp.channel, doLookUp.tid, doLookUp.controlCode, doLookUp.clientId);
+                        com.hoptool.invoiceme.auth.dto.ChangeProfilePasswordRequest changePasswordRequest = new com.hoptool.invoiceme.auth.dto.ChangeProfilePasswordRequest(doLookUp.businessMobileNo, doLookUp.userEmail, doLookUp.channel, doLookUp.tid, doLookUp.controlCode, userLoginObj.password, userLoginObj.newPassword, doLookUp.clientId);
    
-                        System.out.println("--> profileSyncRequest = " +profileSyncRequest);
+                        System.out.println("--> chan password = " +changePasswordRequest);
                         
                         
-                        doChangePassword = authService.doChangePassword(profileSyncRequest);
+                        doChangePassword = authService.doChangePassword(changePasswordRequest);
  
                         if(doChangePassword !=null && doChangePassword.statusHeaders() !=null && doChangePassword.statusHeaders().statusCode == ErrorCodes.SUCCESSFUL)
                         {
@@ -232,9 +236,6 @@ public class UserController {
                             return doChangePassword;
                         }
                      
-                 
-
-
                     }
                     
             }
@@ -249,7 +250,7 @@ public class UserController {
         } catch (Exception e) {
             
             
-             log.info("Exception @ doInitForcePasswordReset ",e);
+             log.info("Exception @ doChangePassword ",e);
             
              //return new ForceSyncResponse( new com.hoptool.invoiceme.auth.dto.ResponseStatusHeaders(ErrorCodes.SYSTEM_ERROR, ErrorCodes.doErroDesc(ErrorCodes.SYSTEM_ERROR)));
                
@@ -337,7 +338,7 @@ public class UserController {
             {
 
                    
-                 return  authService.doFirsMBSLogin(request);
+                 return  invoiceService.doFirsMBSLogin(request);
 
             }
             else
@@ -349,7 +350,17 @@ public class UserController {
            
            
             
-        } catch (Exception e) {
+        }
+        catch(com.hoptool.exceptions.InvalidRequestException ex)
+        {
+            System.out.println("ex-- = " + ex.getMessage());
+            FirsLoginResponse fromJson = new Gson().fromJson(ex.getMessage().split("#")[1], FirsLoginResponse.class);
+            System.out.println("fromJson = " + fromJson);
+            log.info("Exception @ InvalidRequestException ",ex);
+            
+            return fromJson;
+        }
+        catch (Exception e) {
             
             
              log.info("Exception @ doFIRSMBSLogin ",e);

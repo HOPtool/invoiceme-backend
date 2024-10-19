@@ -28,6 +28,9 @@ import com.hoptool.invoice.dto.UpdateInvoice;
 import com.hoptool.invoice.dto.UpdateInvoiceObj;
 import com.hoptool.invoice.dto.ValidateIRNRequest;
 import com.hoptool.invoice.dto.ValidateIRNRequestObj;
+import com.hoptool.invoiceme.auth.dto.FIRSMBSLogin;
+import com.hoptool.invoiceme.auth.dto.FIRSMBSLoginObj;
+import com.hoptool.invoiceme.auth.dto.FirsLoginResponse;
 import com.hoptool.resources.ResourceHelper;
 import com.hoptool.service.mongo.MongoService;
 import com.hoptool.service.redis.RedisClient;
@@ -478,6 +481,44 @@ public class InvoiceService {
         }
 
         return requestResponse;
+    }
+    
+     public @NotNull FirsLoginResponse doFirsMBSLogin(FIRSMBSLogin request) {
+        log.info("-- doFirsMBSLogin --"+request);
+        FirsLoginResponse requestResponse;
+        
+        try (var client = ClientBuilder.newClient()) {
+           
+            FIRSMBSLoginObj irnDTO = new FIRSMBSLoginObj(request);
+            log.info("@@ doChangePassword--irnDTO-- "+irnDTO);
+            var target = client.target(String.format("%s/api/v1/utilities/authenticate",firstEIVCBaseUrl)); 
+            var requestBuilder = target.request();
+            requestBuilder.header("x-api-key", firstEIVCAPIKey);
+            requestBuilder.header("x-api-secret", firstEIVCAPISecret);
+            
+            var httpResponse = requestBuilder.post(jakarta.ws.rs.client.Entity.json(new FIRSMBSLoginObj(request)));
+            
+            switch (httpResponse.getStatus()) {
+                case 200 -> {
+                }
+                case 400, 401, 403,404,405,500,504 -> {
+                    var body = httpResponse.readEntity(String.class);
+                    log.warn("Invalid firs mbs login response {} {}", httpResponse.getStatus(), body);
+                    throw new InvalidRequestException(String.format("Invalid firs mbs login {%s} : # %s",
+                            httpResponse.getStatus(), body));
+                }
+                default -> {
+                    var body = httpResponse.readEntity(String.class);
+                    log.warn("Invalid  firs mbs login exception {} {}", httpResponse.getStatus(), body);
+                    throw new ProcessingException(String.format("Error occurred while  calling firs mbs login {%s}  {%s} : {%s}",
+                            request.email(),httpResponse.getStatus(), body));
+                }
+            }
+
+            requestResponse = httpResponse.readEntity(FirsLoginResponse.class);
+        }
+
+        return  requestResponse;//new ProfileSyncResponse(requestResponse.code(), requestResponse.data(), (requestResponse.code() !=null && requestResponse.code().equals("200")|| requestResponse.equals("202")?"Successful":"Error"));
     }
         
         
