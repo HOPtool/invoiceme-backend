@@ -9,6 +9,7 @@ import com.hoptool.invoiceme.dto.InvoiceCategoriesResponse;
 import com.hoptool.invoiceme.dto.InvoiceTypesResponse;
 import com.hoptool.invoiceme.dto.TinOrCACLookup;
 import com.hoptool.invoiceme.dto.TinOrCACLookupObj;
+import com.hoptool.invoiceme.enumz.DomainType;
 import com.hoptool.invoiceme.enumz.DummyCorporatesLookUp;
 import com.hoptool.invoiceme.enumz.InvoiceTypesEnum;
 import com.hoptool.resources.ErrorCodes;
@@ -88,6 +89,16 @@ public class InvoicesMeResources {
     public InvoiceCategoriesResponse doListInvoiceCategories() {
      
          List<String> enumNames = Stream.of(InvoiceTypesEnum.values()).map(Enum::name).collect(Collectors.toList());
+          
+           Collections.sort(enumNames);
+      
+        return new InvoiceCategoriesResponse(enumNames);
+    }
+    @POST
+    @Path("domain-types")
+    public InvoiceCategoriesResponse doListDomainTypes() {
+     
+         List<String> enumNames = Stream.of(DomainType.values()).map(Enum::name).collect(Collectors.toList());
           
            Collections.sort(enumNames);
       

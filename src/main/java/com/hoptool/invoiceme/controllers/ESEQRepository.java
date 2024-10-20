@@ -7,7 +7,7 @@ package com.hoptool.invoiceme.controllers;
 
 
 
-import com.hoptool.entities.ESeq;
+import com.hoptool.invoiceme.entities.ESeq;
 import com.hoptool.resources.ResourceHelper;
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;

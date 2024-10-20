@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.hoptool.entities;
+package com.hoptool.invoiceme.entities;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import java.io.Serializable;
-import java.math.BigInteger;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
