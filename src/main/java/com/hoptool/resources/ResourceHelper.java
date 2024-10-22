@@ -79,6 +79,27 @@ public class ResourceHelper {
         return toLDT;
     }
     
+    public boolean doValidateLDT(String dateStr) {
+        
+        LocalDateTime toLDT = null;
+        String fromPad = " 00:00:00";
+        String toPad = " 23:59:59";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        boolean valid = false;
+        try 
+        {
+          
+                toLDT =  LocalDateTime.parse(dateStr, formatter);
+                valid = true;
+            
+        } 
+        catch (Exception e) {
+        
+            //e.printStackTrace();
+        }
+       
+        return valid;
+    }
     
     public  LocalDate strToLD(String dateStr) {
         

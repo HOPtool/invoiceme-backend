@@ -10,6 +10,7 @@ import com.hoptool.invoiceme.dto.OTPValidationRequestObj;
 import com.hoptool.invoiceme.entities.BusinessInfo;
 import com.hoptool.invoiceme.entities.EmailVerificationLog;
 import com.hoptool.invoiceme.entities.UserLog;
+import com.hoptool.invoiceme.enumz.ResourceStatusEnum;
 import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -59,7 +60,7 @@ public class BusinessInfoRepository implements  PanacheRepository<BusinessInfo> 
     
     
     @Transactional
-    public BusinessInfo doLog(UserLog request) throws Exception {
+    public BusinessInfo doLog(UserLog request, String businessId) throws Exception {
         BusinessInfo obj = null;
         String firstname = "", lastname ="";
         try 
@@ -76,8 +77,8 @@ public class BusinessInfoRepository implements  PanacheRepository<BusinessInfo> 
                 obj.businessType = request.verificationType;
                 obj.contactPersonLastName = request.lastName;
                 obj.contactPersonfirstName = request.firstName;
-               // obj.c
-                //obj. = LocalDateTime.now();
+                obj.businessId = businessId;
+                obj.status = ResourceStatusEnum.INACTIVE.name();
                 obj = Panache.getEntityManager().merge(obj);
           
            

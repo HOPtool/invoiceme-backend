@@ -12,7 +12,6 @@ import com.hoptool.invoiceme.dto.ChangeProfilePasswordRequest;
 import com.hoptool.invoiceme.dto.ChangeProfilePasswordRequestObj;
 import com.hoptool.invoiceme.auth.dto.ForceSyncProfilePasswordRequest;
 import com.hoptool.invoiceme.auth.dto.ForceSyncResponse;
-import com.hoptool.invoiceme.auth.dto.ProfileSyncRequest;
 import com.hoptool.invoiceme.auth.dto.ProfileSyncResponse;
 import com.hoptool.invoiceme.auth.dto.SyncProfile;
 import com.hoptool.invoiceme.auth.dto.UserLoginRequest;
@@ -35,10 +34,12 @@ import com.hoptool.invoiceme.dto.UserLogin;
 import com.hoptool.invoiceme.dto.UserLoginObj;
 import com.hoptool.invoiceme.dto.UserSignUpStepOne;
 import com.hoptool.invoiceme.dto.UserSignUpStepOneObj;
+import com.hoptool.invoiceme.entities.BusinessInfo;
 import com.hoptool.invoiceme.entities.EmailVerificationLog;
 import com.hoptool.invoiceme.entities.UserLog;
 import com.hoptool.invoiceme.enumz.OTPStatus;
 import com.hoptool.invoiceme.enumz.SignUpStage;
+import com.hoptool.invoiceme.repositories.BusinessInfoRepository;
 import com.hoptool.invoiceme.repositories.EmailValidationRepository;
 import com.hoptool.invoiceme.repositories.SysDataRepository;
 import com.hoptool.invoiceme.repositories.UserLogRepository;
@@ -48,6 +49,7 @@ import com.hoptool.resources.RandomCharacter;
 import com.hoptool.service.AuthService;
 import com.hoptool.service.InvoiceService;
 import io.quarkus.hibernate.orm.panache.Panache;
+import static io.quarkus.logging.Log.info;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -80,6 +82,12 @@ public class UserController {
     
     @Inject
     InvoiceService invoiceService;
+    
+    @Inject
+    ESEQRepository eseqRepository;
+    
+    @Inject
+    BusinessInfoRepository businessInfoRepo;
     
     
     public UserLogResponse doLogin(@Valid UserLogin request) {
@@ -620,6 +628,10 @@ public class UserController {
                       
                         UserLog doSyncProfileSyncStatus = userLogRepo.doSyncProfileSyncStatus(merge, doSyncProfile.statusHeaders().statusCode,doSyncProfile.channel(), doSyncProfile.clientId(), doSyncProfile.controlCode());
                         
+                        String genCode = eseqRepository.genCode(sysDataRepo.doLookUpByNameStr("BUSSINESS-ID", "XXX"), Integer.parseInt(sysDataRepo.doLookUpByNameStr("BUSSINESS-ID-LEN", "5")));
+                        log.info("-- genCode -- "+genCode);
+                        BusinessInfo doLog = businessInfoRepo.doLog(doSyncProfileSyncStatus,genCode);
+                        log.info("-- BusinessInfo doLog -- "+doLog);
                         log.info(" -- doSyncProfileSyncStatus --"+doSyncProfileSyncStatus);
                         return  new OnboardingCompletionResponse(ErrorCodes.SUCCESSFUL, ErrorCodes.doErroDesc(ErrorCodes.SUCCESSFUL));
                     }

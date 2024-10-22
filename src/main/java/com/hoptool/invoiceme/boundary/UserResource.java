@@ -19,6 +19,7 @@ import com.hoptool.invoiceme.dto.OnboardingCompletionResponse;
 import com.hoptool.invoiceme.dto.UserLogResponse;
 import com.hoptool.invoiceme.dto.UserLogin;
 import com.hoptool.invoiceme.dto.UserSignUpStepOne;
+import com.hoptool.invoiceme.filters.JWTTokenNeeded;
 import com.hoptool.service.InvoiceService;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
@@ -73,6 +74,7 @@ public class UserResource {
     
     @POST
     @Path("user-login")
+    //@JWTTokenNeeded
     public UserLogResponse doInvoiceMeUserLogin(@Valid final UserLogin request) {
         System.out.println("doInvoiceMeUserLogin request = " +  request);
        return userController.doLogin(request);

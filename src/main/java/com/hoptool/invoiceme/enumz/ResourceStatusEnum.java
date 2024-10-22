@@ -4,16 +4,13 @@
  */
 package com.hoptool.invoiceme.enumz;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  *
  * @author paycraftsystems-i
  */
 
 public enum ResourceStatusEnum {
-    ACTIVE, INACTIVE, DELETED;
+    ALL, ACTIVE, INACTIVE, DELETED;
     
     
    

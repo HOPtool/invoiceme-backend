@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.ToString;
 
 /**
  *
@@ -18,6 +19,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name="business_logs")
+@ToString
 public class BusinessInfo extends PanacheEntityBase {
     
     @Id
@@ -34,8 +36,8 @@ public class BusinessInfo extends PanacheEntityBase {
     @Column(name="business_no")
     public String businessNo;
     
-    @Column(name="invoiceme_id")
-    public String invoiceMeId;
+    //@Column(name="invoiceme_id")
+   // public String invoiceMeId;
 
     @Column(name="conpact_person_first_name")
     public String contactPersonfirstName;
@@ -49,11 +51,11 @@ public class BusinessInfo extends PanacheEntityBase {
     @Column(name="business_logo_url")
     public String businessLogoUrl;
     
-    @Column(name="verification_type")
-    public String verificationType;
-    
     @Column(name="business_mobile_no")
     public String businessMobileNo;
+    
+    @Column(name="business_id")
+    public String businessId;
     
     @Column(name="status")
     public String status;

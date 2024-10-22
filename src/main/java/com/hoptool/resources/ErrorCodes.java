@@ -14,6 +14,10 @@ public class ErrorCodes {
     public static final int SUCCESSFUL = 200;
     public static final int CREATED = 201;
     public static final int ACCEPTED = 202;
+    public static final int INVALID_USER_JWT = 710;
+    public static final int INVALID_SEARCH_PARAM = 711;
+    public static final int INVALID_PAGE_ID_OR_FETCH_SIZE = 712;
+    public static final int NO_RECORD_FOUND = 713;
     public static final int OTP_USED = 714;
     public static final int OTP_INVALID = 715;
     public static final int OTP_EXPIRED = 716;
@@ -88,13 +92,13 @@ public class ErrorCodes {
     public static final int LIMIT_EXCEEDED = 939;
     public static final int ERROR_VERIFYING_APPROVAL = 940;
     public static final int APPROVAL_ERROR = 941;
-    public static final int ERROR_RETREIVING_LOAN_SETTINGS = 942;
+    public static final int JWT_SIGNATURE_EXCEPTION = 942;
     public static final int INVALID_LOAN_SETTING_PARAM = 943;
     public static final int INVALID_USERNAME_OR_PASSWORD = 944;
     public static final int INVALID_OFFER_ACTION = 945;
     public static final int OFFER_DECLINED_BY_LOANEE = 946;
     public static final int SUCCESSFULLY_ACCEPTED_PENDING_DISBURSEMENT = 947;
-    public static final int INVALID_LOANEE_ID = 948;
+    public static final int INVALID_BUSINESS_ID = 948;
     public static final int INVALID_LOAN_ID = 949;
     public static final int LOANEE_COMMENT = 950;
     public static final int OFFER_EXPIRED = 951;
@@ -173,6 +177,22 @@ public class ErrorCodes {
                  break;
             case 125:
                 desc = "INVALID DOB";
+                 break;
+                 
+            case INVALID_USER_JWT:
+                  desc = "INVALID_USER_JWT";
+                 break;
+                 
+            case INVALID_SEARCH_PARAM:
+                  desc = "INVALID_SEARCH_PARAM";
+                 break;
+                 
+             case INVALID_PAGE_ID_OR_FETCH_SIZE:
+                  desc = "INVALID_PAGE_ID_OR_FETCH_SIZE";
+                 break;
+                 
+             case NO_RECORD_FOUND:
+                  desc = "NO_RECORD_FOUND";
                  break;
                  
                 case OTP_USED:
@@ -262,6 +282,12 @@ public class ErrorCodes {
              case 923:
                 desc = "INVALID DOMAIN";  
                  break;
+                 
+                 
+             case INVALID_BUSINESS_ID:
+                desc = "INVALID_BUSINESS_ID";  
+                 break;
+            
              case INVALID_VERIFY_PIN:
                 desc = "INVALID_VERIFY_PIN";  
                  break;
@@ -269,6 +295,12 @@ public class ErrorCodes {
             case INVALID_USERNAME_OR_PASSWORD:
                 desc = "INVALID_USERNAME_OR_PASSWORD";  
                  break;
+                 
+            case JWT_SIGNATURE_EXCEPTION:
+                desc = "JWT_SIGNATURE_EXCEPTION";  
+                break;
+            
+                
                  
                
             default:
