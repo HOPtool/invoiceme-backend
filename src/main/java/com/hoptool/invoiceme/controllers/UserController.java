@@ -594,7 +594,7 @@ public class UserController {
         {
             
             CompleteBusinessOnboardingObj onboardingObj = new CompleteBusinessOnboardingObj(request);
-            
+            log.info(" --@@ doCompleteOnboarding -- "+onboardingObj);
             //verify onboarding stage
             UserLog doVerifyActionStage = userLogRepo.doVerifyActionStage(onboardingObj.companyEmail, onboardingObj.corporateId, SignUpStage.OTP_VERIFICATION.name());
             
