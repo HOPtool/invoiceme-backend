@@ -654,7 +654,7 @@ public class UserController {
             }
             else
             {
-                throw new InvalidRequestException(String.format("Prohibited action {%s} : {%s} {%s}",
+                throw new InvalidRequestException(String.format(":Prohibited action {%s} : {%s} {%s}",
                             400, request, onboardingObj.toString()));
             }
         
