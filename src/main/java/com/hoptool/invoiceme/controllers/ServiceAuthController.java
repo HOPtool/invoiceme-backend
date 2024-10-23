@@ -38,9 +38,9 @@ public class ServiceAuthController {
         } catch (Exception e) {
             
             
-            log.error("Exception @@ doSysLogin ");
+            log.error("Exception @@ doSysLogin ",e);
             
-            return new SysLoginResponse(new ResponseStatusHeaders(ErrorCodes.SYSTEM_ERROR, ErrorCodes.doErroDesc(ErrorCodes.SYSTEM_ERROR)),null, null, null, 0);
+            return new SysLoginResponse(new ResponseStatusHeaders(ErrorCodes.SYSTEM_ERROR, ErrorCodes.doErroDesc(ErrorCodes.SYSTEM_ERROR)+" - "+e.getMessage()),null, null, null, 0);
         
         }
         
@@ -56,7 +56,7 @@ public class ServiceAuthController {
         } catch (Exception e) {
             
             
-            log.error("Exception @@ doSysLogin ");
+            log.error("Exception @@ doReset ",e);
             
             return new ResetResponse(ErrorCodes.SYSTEM_ERROR, null, null, e.getMessage());
             
@@ -76,7 +76,7 @@ public class ServiceAuthController {
         } catch (Exception e) {
             
             
-            log.error("Exception @@ doSysLogin ");
+            log.error("Exception @@ doResend ",e);
             
            // return new ResetResponse(new ResponseStatusHeaders(ErrorCodes.SYSTEM_ERROR, ErrorCodes.doErroDesc(ErrorCodes.SYSTEM_ERROR)),null, null, null, 0);
         
