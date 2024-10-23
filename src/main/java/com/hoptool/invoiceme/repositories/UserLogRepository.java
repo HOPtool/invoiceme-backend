@@ -54,7 +54,7 @@ public class UserLogRepository implements  PanacheRepository<UserLog> {
         verify the stage  the user is before allowing the onboarding completion
     */
     public UserLog doVerifyActionStage(String companyEmail,  String corporateId, String stage) {
-        //log.info("--  doVerifyActionStage-- "+companyEmail+" - corporateId -- "+corporateId+" --stage "+stage);
+        log.info("--  doVerifyActionStage-- "+companyEmail+" - corporateId -- "+corporateId+" --stage "+stage);
         return find("userEmail = ?1 and corporateId =?2  and signUpStage = ?3 ", companyEmail, corporateId, stage).firstResult();
     
     }
