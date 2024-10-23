@@ -1,6 +1,12 @@
 package com.hoptool.invoiceme.boundary;
 
+import com.hoptool.eivc.response.dto.InvoiceTypeResponse;
+import com.hoptool.eivc.response.dto.PaymentMeansDataResponse;
+import com.hoptool.eivc.response.dto.VATExemptionDataResponse;
 import com.hoptool.exceptions.InvalidRequestException;
+import com.hoptool.invoice.dto.CountriesResponse;
+import com.hoptool.invoice.dto.CurrenciesResponse;
+import com.hoptool.invoice.dto.TaxCategoryResponse;
 import com.hoptool.invoiceme.controllers.CryptoHelper;
 import com.hoptool.invoiceme.controllers.InvoiceMeRequestController;
 import com.hoptool.invoiceme.controllers.UserController;
@@ -14,6 +20,7 @@ import com.hoptool.invoiceme.enumz.DummyCorporatesLookUp;
 import com.hoptool.invoiceme.enumz.InvoiceTypesEnum;
 import com.hoptool.resources.ErrorCodes;
 import com.hoptool.service.InvoiceService;
+import com.hoptool.service.ResourcesService;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
 import jakarta.json.JsonObjectBuilder;
@@ -46,6 +53,9 @@ public class InvoicesMeResources {
     
     @Inject
     UserController userController;
+    
+    @Inject
+    ResourcesService resourceService;
     
     
    
@@ -105,6 +115,7 @@ public class InvoicesMeResources {
         return new InvoiceCategoriesResponse(enumNames);
     }
     
+    
     @POST
     @Path("lookup-tin-or-cac")
     public BusinessNameResponse doLookupTinOrCAC(@Valid TinOrCACLookup lookUp) {
@@ -158,5 +169,50 @@ public class InvoicesMeResources {
     }
     
     
+    /*
+    @POST
+    @Path("invoice-types")
+    public InvoiceTypeResponse doGetInvoiceTypes() {
+        
+        return resourceService.doInvoiceTypes();
+    }
+    */
+    
+    @POST
+    @Path("list-countries")
+    public CountriesResponse doListCountries() {
+        
+        return resourceService.doGetCountries();
+    }
+    
+    
+    @POST
+    @Path("list-currencies")
+    public CurrenciesResponse doListCurrencies() {
+        
+        return resourceService.doGetCurrencies();
+    }
+    
+    @POST
+    @Path("list-tax-categories")
+    public TaxCategoryResponse doListTaxCategorie() {
+        
+        return resourceService.doListTaxCategories();
+    }
+    
+    
+    @POST
+    @Path("list-vat-exemptions")
+    public VATExemptionDataResponse doListVatExemtions() {
+        
+        return resourceService.doListVATExemptions();
+    }
+    
+    @POST
+    @Path("list-payment-means")
+    public PaymentMeansDataResponse doListPaymentMeans() {
+        
+        return resourceService.doListPaymentMeans();
+    }
 
 }

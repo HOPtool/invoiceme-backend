@@ -8,6 +8,7 @@ import com.hoptool.eivc.response.dto.CountryDataResponse;
 import com.hoptool.eivc.response.dto.CurrenciesDataResponse;
 import com.hoptool.eivc.response.dto.InvoiceTypeResponse;
 import com.hoptool.eivc.response.dto.PaymentMeansDataResponse;
+import com.hoptool.eivc.response.dto.TaxCatogoriesResponse;
 import com.hoptool.eivc.response.dto.VATExemptionDataResponse;
 import com.hoptool.exceptions.InvalidRequestException;
 import com.hoptool.exceptions.ProcessingException;
@@ -146,6 +147,40 @@ public class ResourcesService {
         
         try (var client = ClientBuilder.newClient()) {
             var target = client.target(String.format("%s/api/v1/invoice/resources/payment-means", firsBaseUrl));
+            var requestBuilder = target.request();
+           
+            var httpResponse = requestBuilder.get();
+            switch (httpResponse.getStatus()) {
+                case 200 -> 
+                {
+                }
+                case 400, 401, 403 -> {
+                    var body = httpResponse.readEntity(String.class);
+                    log.warn("Invalid list payment means error {} {}", httpResponse.getStatus(), body);
+                    throw new InvalidRequestException(String.format("Invalid list payment means request {%s} : {%s}",
+                            httpResponse.getStatus(), body));
+                }
+                default -> {
+                    var body = httpResponse.readEntity(String.class);
+                    log.warn("list payment means exception {} {}", httpResponse.getStatus(), body);
+                    throw new ProcessingException(String.format("Error occurred while processing list payment means {%s} : {%s}",
+                            httpResponse.getStatus(), body));
+                }
+            }
+            
+            response = httpResponse.readEntity(PaymentMeansDataResponse.class);
+            
+        }
+       
+        return  response;
+    }
+    
+    public @NotNull PaymentMeansDataResponse doListTAXCategories() {
+       
+        PaymentMeansDataResponse response;// == null;
+        
+        try (var client = ClientBuilder.newClient()) {
+            var target = client.target(String.format("%s/api/v1/invoice/resources/tax-categories", firsBaseUrl));
             var requestBuilder = target.request();
            
             var httpResponse = requestBuilder.get();

@@ -78,6 +78,9 @@ public class InvoiceService {
     @Inject
     RedisConnectors redisConnectors;
     
+    
+    //tax-categories
+    
     public @NotNull InvoiceValidationResponse doValidateInvoiceIRN(ValidateIRNRequest request) {
         log.info("-- doValidateInvoiceIRN --"+request);
         InvoiceValidationServiceResponse requestResponse;
@@ -194,6 +197,8 @@ public class InvoiceService {
 
         return requestResponse;
     }
+    
+   
     
     public @NotNull DownloadInvoiceResponse doDownloadInvoice(ValidateIRNRequest request) {
      

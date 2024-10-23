@@ -19,7 +19,6 @@ import com.hoptool.invoiceme.dto.OnboardingCompletionResponse;
 import com.hoptool.invoiceme.dto.UserLogResponse;
 import com.hoptool.invoiceme.dto.UserLogin;
 import com.hoptool.invoiceme.dto.UserSignUpStepOne;
-import com.hoptool.invoiceme.filters.JWTTokenNeeded;
 import com.hoptool.service.InvoiceService;
 import jakarta.inject.Inject;
 import jakarta.json.Json;
